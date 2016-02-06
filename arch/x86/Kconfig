@@ -2598,6 +2598,14 @@ config PMC_ATOM
 	def_bool y
         depends on PCI
 
+config X86_VERBOSE_BOOTUP
+        bool "Enable verbose x86 bootup info messages"
+        default y
+        ---help---
+          Enables the informational output from the decompression stage
+          (e.g. bzImage) of the boot. If you disable this you will still
+          see errors. Disable this if you want silent bootup.
+
 source "net/Kconfig"
 
 source "drivers/Kconfig"

@@ -26,7 +26,7 @@
 
 	__HEAD
 ENTRY(startup_32)
-1:	loop 1b
+1:	jmp 1b
 
 ENDPROC(startup_32)
 

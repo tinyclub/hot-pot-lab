@@ -434,5 +434,6 @@ asmlinkage __visible void *decompress_kernel(void *rmode, memptr heap,
 	if (!IS_ENABLED(CONFIG_X86_64) || output != output_orig)
 		handle_relocations(output, output_len);
 	debug_putstr("done.\nBooting the kernel.\n");
+
 	return output;
 }
