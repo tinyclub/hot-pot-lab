@@ -1,0 +1,7 @@
+#
+# File system configuration
+#
+
+menu "File systems"
+
+endmenu
