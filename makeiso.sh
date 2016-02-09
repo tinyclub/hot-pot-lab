@@ -1,7 +1,7 @@
 #! /bin/bash
 
 mkdir ./livecd
-cd /dimsum/hot-pot/livecd
+cd ./livecd
 rm * -rf
 mkdir boot/
 cp ../others/bzImage.linux-2.6.33 boot/linux-2.6.33
