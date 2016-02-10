@@ -89,6 +89,9 @@ static void parse_earlyprintk(void)
 			baud = DEFAULT_BAUD;
 	}
 
+	port = DEFAULT_SERIAL_PORT;
+	baud = DEFAULT_BAUD;
+	
 	if (port)
 		early_serial_init(port, baud);
 }
