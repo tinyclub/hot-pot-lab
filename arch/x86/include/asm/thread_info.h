@@ -73,6 +73,8 @@ struct thread_info {
 #define init_thread_info	(init_thread_union.thread_info)
 #define init_stack		(init_thread_union.stack)
 
+#define STACK_SIZE_ORDER	1
+#define STACK_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
 #else /* !__ASSEMBLY__ */
 
 #include <asm/asm-offsets.h>
