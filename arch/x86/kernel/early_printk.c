@@ -16,10 +16,6 @@ __u8  orig_y;		/* 0x01 */
 
 #define XMTRDY          0x20
 
-#define TXR             0       /*  Transmit register (WRITE) */
-#define LSR             5       /*  Line Status               */
-
-
 #define DEFAULT_SERIAL_PORT 0x3f8 /* ttyS0 */
 
 #define DLAB		0x80
@@ -71,7 +67,11 @@ void serial_putchar(int ch)
 	while ((inb(early_serial_base + LSR) & XMTRDY) == 0 && --timeout)
 		cpu_relax();
 
-	outb(ch, early_serial_base + TXR);
+	if (timeout > 0)
+		outb(ch, early_serial_base + TXR);
+	else
+		//fixme: inifinite retry.
+		serial_putchar(ch);
 }
 
 void serial_putstr(const char *s)
