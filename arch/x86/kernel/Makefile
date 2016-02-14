@@ -1,1 +1,1 @@
-obj-y	:= head_32.o early_printk.o
+obj-y	:= head_32.o early_printk.o vmlinux.lds
