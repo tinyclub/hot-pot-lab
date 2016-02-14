@@ -59,11 +59,7 @@ void serial_putchar(int ch)
 {
 	unsigned timeout = 0xffff;
 	early_serial_base = 0x3f8;
-	int loop = 0;
-	for (loop = 0; loop < 0xfffff; loop++)
-	{
-		;
-	}
+
 	while ((inb(early_serial_base + LSR) & XMTRDY) == 0 && --timeout)
 		cpu_relax();
 
@@ -79,6 +75,7 @@ void serial_putstr(const char *s)
 	int x, y, pos;
 	char c;
 
+	early_serial_base = 0x3f8;
 	if (early_serial_base) {
 		const char *str = __pa(s);
 		while (*str) {
