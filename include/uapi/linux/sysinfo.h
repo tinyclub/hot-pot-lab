@@ -3,6 +3,12 @@
 
 #include <linux/types.h>
 
+
+typedef long __kernel_long_t;
+typedef unsigned long __kernel_ulong_t;
+#define __kernel_long_t __kernel_long_t
+
+
 #define SI_LOAD_SHIFT	16
 struct sysinfo {
 	__kernel_long_t uptime;		/* Seconds since boot */

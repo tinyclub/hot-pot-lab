@@ -35,7 +35,6 @@ config PREEMPT_VOLUNTARY
 
 config PREEMPT
 	bool "Preemptible Kernel (Low-Latency Desktop)"
-	select PREEMPT_COUNT
 	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
 	help
 	  This option reduces the latency of the kernel by making
@@ -53,6 +52,3 @@ config PREEMPT
 	  range.
 
 endchoice
-
-config PREEMPT_COUNT
-       bool

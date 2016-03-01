@@ -1,0 +1,148 @@
+/*
+ * Device Tree Source for OMAP3 SoC
+ *
+ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+ *
+ * This file is licensed under the terms of the GNU General Public License
+ * version 2.  This program is licensed "as is" without any warranty of any
+ * kind, whether express or implied.
+ */
+
+#include "omap3.dtsi"
+
+/ {
+	aliases {
+		serial3 = &uart4;
+	};
+
+	cpus {
+		/* OMAP3630/OMAP37xx 'standard device' variants OPP50 to OPP130 */
+		cpu@0 {
+			operating-points = <
+				/* kHz    uV */
+				300000  1012500
+				600000  1200000
+				800000  1325000
+			>;
+			clock-latency = <300000>; /* From legacy driver */
+		};
+	};
+
+	ocp {
+		uart4: serial@49042000 {
+			compatible = "ti,omap3-uart";
+			ti,hwmods = "uart4";
+			clock-frequency = <48000000>;
+		};
+	};
+
+	clocks {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		/include/ "omap36xx-clocks.dtsi"
+		/include/ "omap34xx-omap36xx-clocks.dtsi"
+		/include/ "omap36xx-omap3430es2plus-clocks.dtsi"
+		/include/ "omap36xx-am35xx-omap3430es2plus-clocks.dtsi"
+	};
+
+	clockdomains {
+		usbhost_clkdm: usbhost_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&usbhost_48m_fck>, <&usbhost_ick>;
+		};
+
+		wkup_clkdm: wkup_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&wdt1_ick>, <&gpt12_ick>, <&gpio1_ick>,
+				 <&gpt1_ick>, <&omap_32ksync_ick>, <&wdt2_ick>,
+				 <&wdt2_fck>;
+		};
+
+		cam_clkdm: cam_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&cam_ick>;
+		};
+
+		dpll4_clkdm: dpll4_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&dpll4_ck>;
+		};
+
+		sgx_clkdm: sgx_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&sgx_ick>;
+		};
+
+		dpll3_clkdm: dpll3_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&dpll3_ck>;
+		};
+
+		iva2_clkdm: iva2_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&iva2_ck>;
+		};
+
+		dpll1_clkdm: dpll1_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&dpll1_ck>;
+		};
+
+		dpll5_clkdm: dpll5_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&dpll5_ck>;
+		};
+
+		dpll2_clkdm: dpll2_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&dpll2_ck>;
+		};
+
+		dss_clkdm: dss_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&dss1_alwon_fck_3430es2>, <&dss_ick_3430es2>;
+		};
+
+		core_l4_clkdm: core_l4_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&mmchs1_ick>, <&mmchs2_ick>, <&hdq_fck>,
+				 <&uart1_ick>, <&mcspi4_fck>, <&i2c3_fck>,
+				 <&mcspi2_ick>, <&uart2_ick>, <&mcspi3_ick>,
+				 <&i2c1_fck>, <&hdq_ick>, <&sha12_ick>,
+				 <&mcbsp5_ick>, <&mcspi3_fck>, <&aes2_ick>,
+				 <&mcspi1_ick>, <&uart2_fck>, <&mmchs2_fck>,
+				 <&mmchs1_fck>, <&i2c3_ick>, <&mcspi1_fck>,
+				 <&mcspi4_ick>, <&omapctrl_ick>, <&mcbsp1_ick>,
+				 <&mcspi2_fck>, <&gpt10_ick>, <&i2c2_fck>,
+				 <&i2c2_ick>, <&gpt11_ick>, <&i2c1_ick>,
+				 <&uart1_fck>;
+		};
+
+		core_l3_clkdm: core_l3_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&sdrc_ick>;
+		};
+
+		per_clkdm: per_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&gpt2_ick>, <&uart3_fck>, <&gpio3_ick>,
+				 <&mcbsp2_ick>, <&gpt6_ick>, <&mcbsp4_ick>,
+				 <&gpt4_ick>, <&mcbsp3_ick>, <&gpt8_ick>,
+				 <&uart3_ick>, <&gpt5_ick>, <&gpt7_ick>,
+				 <&gpio2_ick>, <&gpio6_ick>, <&gpt9_ick>,
+				 <&gpt3_ick>, <&gpio5_ick>, <&wdt3_ick>,
+				 <&gpio4_ick>, <&wdt3_fck>, <&uart4_ick>;
+		};
+
+		emu_clkdm: emu_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&emu_src_ck>;
+		};
+
+		d2d_clkdm: d2d_clkdm {
+			compatible = "ti,clockdomain";
+			clocks = <&mad2d_ick>, <&sad2d_ick>, <&modem_fck>;
+		};
+	};
+};

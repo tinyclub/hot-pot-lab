@@ -1,0 +1,1 @@
+obj-y := buffer.o namei.o inode.o file.o dir.o misc.o fat.o format.o

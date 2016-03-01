@@ -241,6 +241,7 @@ extern void __set_current_blocked(const sigset_t *);
 extern int show_unhandled_signals;
 extern int sigsuspend(sigset_t *);
 
+#if 0
 struct sigaction {
 #ifndef __ARCH_HAS_IRIX_SIGACTION
 	__sighandler_t	sa_handler;
@@ -270,6 +271,7 @@ struct old_sigaction {
 	__sigrestore_t sa_restorer;
 };
 #endif
+
 
 struct ksignal {
 	struct k_sigaction ka;
@@ -440,6 +442,8 @@ int __save_altstack(stack_t __user *, unsigned long);
 #ifdef CONFIG_PROC_FS
 struct seq_file;
 extern void render_sigset_t(struct seq_file *, const char *, sigset_t *);
+#endif
+
 #endif
 
 #endif /* _LINUX_SIGNAL_H */

@@ -1,0 +1,2 @@
+export UIMAGE_LOADADDR=80008000
+make ARCH=arm CROSS_COMPILE=/dimsum/toolchains/gcc-linaro-arm-linux-gnueabihf-4.7-2013.03-20130313_linux/bin/arm-linux-gnueabihf- uImage

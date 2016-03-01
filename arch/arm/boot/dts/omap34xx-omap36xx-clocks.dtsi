@@ -1,0 +1,222 @@
+/*
+ * Device Tree Source for OMAP34xx/OMAP36xx clock data
+ *
+ * Copyright (C) 2013 Texas Instruments, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+security_l4_ick2: security_l4_ick2 {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&l4_ick>;
+	clock-mult = <1>;
+	clock-div = <1>;
+};
+
+aes1_ick: aes1_ick@48004a14 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&security_l4_ick2>;
+	reg = <0x48004a14 0x4>;
+	ti,enable-bit = <3>;
+};
+
+rng_ick: rng_ick@48004a14 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&security_l4_ick2>;
+	reg = <0x48004a14 0x4>;
+	ti,enable-bit = <2>;
+};
+
+sha11_ick: sha11_ick@48004a14 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&security_l4_ick2>;
+	reg = <0x48004a14 0x4>;
+	ti,enable-bit = <1>;
+};
+
+des1_ick: des1_ick@48004a14 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&security_l4_ick2>;
+	reg = <0x48004a14 0x4>;
+	ti,enable-bit = <0>;
+};
+
+cam_mclk: cam_mclk@48004f00 {
+	#clock-cells = <0>;
+	compatible = "gate-clock";
+	clocks = <&dpll4_m5x2_ck>;
+	bit-shift = <0>;
+	reg = <0x48004f00 0x4>;
+	set-rate-parent;
+};
+
+cam_ick: cam_ick@48004f10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-no-wait-interface-clock";
+	clocks = <&l4_ick>;
+	reg = <0x48004f10 0x4>;
+	ti,enable-bit = <0>;
+};
+
+csi2_96m_fck: csi2_96m_fck@48004f00 {
+	#clock-cells = <0>;
+	compatible = "gate-clock";
+	clocks = <&core_96m_fck>;
+	reg = <0x48004f00 0x4>;
+	bit-shift = <1>;
+};
+
+security_l3_ick: security_l3_ick {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&l3_ick>;
+	clock-mult = <1>;
+	clock-div = <1>;
+};
+
+pka_ick: pka_ick@48004a14 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&security_l3_ick>;
+	reg = <0x48004a14 0x4>;
+	ti,enable-bit = <4>;
+};
+
+icr_ick: icr_ick@48004a10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&core_l4_ick>;
+	reg = <0x48004a10 0x4>;
+	ti,enable-bit = <29>;
+};
+
+des2_ick: des2_ick@48004a10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&core_l4_ick>;
+	reg = <0x48004a10 0x4>;
+	ti,enable-bit = <26>;
+};
+
+mspro_ick: mspro_ick@48004a10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&core_l4_ick>;
+	reg = <0x48004a10 0x4>;
+	ti,enable-bit = <23>;
+};
+
+mailboxes_ick: mailboxes_ick@48004a10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&core_l4_ick>;
+	reg = <0x48004a10 0x4>;
+	ti,enable-bit = <7>;
+};
+
+ssi_l4_ick: ssi_l4_ick {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&l4_ick>;
+	clock-mult = <1>;
+	clock-div = <1>;
+};
+
+sr1_fck: sr1_fck@48004c00 {
+	#clock-cells = <0>;
+	compatible = "ti,gate-clock";
+	clocks = <&sys_ck>;
+	reg = <0x48004c00 0x4>;
+	ti,enable-bit = <6>;
+};
+
+sr2_fck: sr2_fck@48004c00 {
+	#clock-cells = <0>;
+	compatible = "ti,gate-clock";
+	clocks = <&sys_ck>;
+	reg = <0x48004c00 0x4>;
+	ti,enable-bit = <7>;
+};
+
+sr_l4_ick: sr_l4_ick {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&l4_ick>;
+	clock-mult = <1>;
+	clock-div = <1>;
+};
+
+dpll2_fck: dpll2_fck@48004040 {
+	#clock-cells = <0>;
+	compatible = "divider-clock";
+	clocks = <&core_ck>;
+	bit-shift = <19>;
+	reg = <0x48004040 0x4>;
+	bit-mask = <0x7>;
+	index-starts-at-one;
+};
+
+dpll2_ck: dpll2_ck@48004004 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-dpll-clock";
+	clocks = <&sys_ck>, <&dpll2_fck>;
+	ti,modes = <0xa2>;
+	reg-names = "control", "idlest", "autoidle", "mult-div1";
+	reg = <0x48004004 0x4>, <0x48004024 0x4>, <0x48004034 0x4>, <0x48004040 0x4>;
+};
+
+dpll2_m2_ck: dpll2_m2_ck@48004044 {
+	#clock-cells = <0>;
+	compatible = "divider-clock";
+	clocks = <&dpll2_ck>;
+	reg = <0x48004044 0x4>;
+	bit-mask = <0x1f>;
+	index-starts-at-one;
+};
+
+iva2_ck: iva2_ck@48004000 {
+	#clock-cells = <0>;
+	compatible = "ti,gate-clock";
+	clocks = <&dpll2_m2_ck>;
+	reg = <0x48004000 0x4>;
+	ti,enable-bit = <0>;
+};
+
+modem_fck: modem_fck@48004a00 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&sys_ck>;
+	reg = <0x48004a00 0x4>;
+	ti,enable-bit = <31>;
+};
+
+sad2d_ick: sad2d_ick@48004a10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&l3_ick>;
+	reg = <0x48004a10 0x4>;
+	ti,enable-bit = <3>;
+};
+
+mad2d_ick: mad2d_ick@48004a18 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&l3_ick>;
+	reg = <0x48004a18 0x4>;
+	ti,enable-bit = <3>;
+};
+
+mspro_fck: mspro_fck@48004a00 {
+	#clock-cells = <0>;
+	compatible = "ti,gate-clock";
+	clocks = <&core_96m_fck>;
+	reg = <0x48004a00 0x4>;
+	ti,enable-bit = <23>;
+};

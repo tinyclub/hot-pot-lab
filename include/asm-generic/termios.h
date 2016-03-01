@@ -2,7 +2,7 @@
 #define _ASM_GENERIC_TERMIOS_H
 
 
-#include <asm/uaccess.h>
+//#include <asm/uaccess.h>
 #include <uapi/asm-generic/termios.h>
 
 /*	intr=^C		quit=^\		erase=del	kill=^U
@@ -13,6 +13,7 @@
 */
 #define INIT_C_CC "\003\034\177\025\004\0\1\0\021\023\032\0\022\017\027\026\0"
 
+#if 0
 /*
  * Translate a "termio" structure into a "termios". Ugh.
  */
@@ -65,8 +66,10 @@ static inline int kernel_termios_to_user_termio(struct termio __user *termio,
 
 	return 0;
 }
+#endif
 
 #ifdef TCGETS2
+#if 0
 static inline int user_termios_to_kernel_termios(struct ktermios *k,
 						 struct termios2 __user *u)
 {
@@ -90,7 +93,9 @@ static inline int kernel_termios_to_user_termios_1(struct termios __user *u,
 {
 	return copy_to_user(u, k, sizeof(struct termios));
 }
+#endif
 #else /* TCGETS2 */
+#if 0
 static inline int user_termios_to_kernel_termios(struct ktermios *k,
 						 struct termios __user *u)
 {
@@ -102,6 +107,7 @@ static inline int kernel_termios_to_user_termios(struct termios __user *u,
 {
 	return copy_to_user(u, k, sizeof(struct termios));
 }
+#endif
 #endif /* TCGETS2 */
 
 #endif /* _ASM_GENERIC_TERMIOS_H */

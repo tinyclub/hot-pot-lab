@@ -1,0 +1,9 @@
+menu "char drivers"
+
+config TTY
+	bool "tty supports"
+	default n
+	help
+	  Say Y here to support tty.
+
+endmenu

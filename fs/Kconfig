@@ -1,7 +1,24 @@
-#
-# File system configuration
-#
+menu "file system"
 
-menu "File systems"
+config PROC_FS
+	def_bool y
+	help
+	  Say Y here to include the proc file system.
+	 
+config MSDOS_FS
+	def_bool y
+	help
+	  Say Y here to include the msdos file system.
 
+config UMSDOS_FS
+	bool "umsdos filesystem"
+	default n
+	help
+	  Say Y here to include the umsdos file system.
+	  
+config EXT2_FS
+	def_bool y
+	help
+	  Say Y here to include the ext2 file system.
+#source "fs/yaffs2/Kconfig"
 endmenu

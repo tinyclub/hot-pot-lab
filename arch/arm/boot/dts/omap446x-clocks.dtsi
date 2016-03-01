@@ -1,0 +1,27 @@
+/*
+ * Device Tree Source for OMAP446x clock data
+ *
+ * Copyright (C) 2013 Texas Instruments, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+div_ts_ck: div_ts_ck@4a307888 {
+	#clock-cells = <0>;
+	compatible = "divider-clock";
+	clocks = <&l4_wkup_clk_mux_ck>;
+	bit-shift = <24>;
+	reg = <0x4a307888 0x4>;
+	table = < 8 0 >, < 16 1 >, < 32 2 >;
+	bit-mask = <0x3>;
+};
+
+bandgap_ts_fclk: bandgap_ts_fclk@4a307888 {
+	#clock-cells = <0>;
+	compatible = "gate-clock";
+	clocks = <&div_ts_ck>;
+	bit-shift = <8>;
+	reg = <0x4a307888 0x4>;
+};

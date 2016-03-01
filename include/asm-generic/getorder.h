@@ -4,7 +4,7 @@
 #ifndef __ASSEMBLY__
 
 #include <linux/compiler.h>
-#include <linux/log2.h>
+#include <base/log2.h>
 
 /*
  * Runtime evaluation of get_order()

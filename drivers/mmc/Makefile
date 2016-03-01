@@ -1,0 +1,1 @@
+obj-y     = mmc.o omap_hsmmc.o mmc_write.o

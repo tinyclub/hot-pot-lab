@@ -16,7 +16,7 @@
 
 /*
  * Some architectures want to ensure there is no local data in their
- * pre-boot environment, so that data can arbitrarily relocated (via
+ * pre-boot environment, so that data can arbitarily relocated (via
  * GOT references).  This is achieved by defining STATIC_RW_DATA to
  * be null.
  */
@@ -61,6 +61,8 @@ static void free(void *where)
 #define large_malloc(a) malloc(a)
 #define large_free(a) free(a)
 
+#define set_error_fn(x)
+
 #define INIT
 
 #else /* STATIC */
@@ -70,18 +72,20 @@ static void free(void *where)
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <linux/string.h>
-#include <linux/slab.h>
 #include <linux/vmalloc.h>
 
 /* Use defines rather than static inline in order to avoid spurious
  * warnings when not needed (indeed large_malloc / large_free are not
  * needed by inflate */
 
-#define malloc(a) kmalloc(a, GFP_KERNEL)
-#define free(a) kfree(a)
+#define malloc(a) dim_sum_mem_alloc(a, MEM_NORMAL)
+#define free(a) dim_sum_mem_free(a)
 
 #define large_malloc(a) vmalloc(a)
 #define large_free(a) vfree(a)
+
+static void(*error)(char *m);
+#define set_error_fn(x) error = x;
 
 #define INIT __init
 #define STATIC

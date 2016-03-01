@@ -1,0 +1,175 @@
+/*
+ * Device Tree Source for OMAP34xx/OMAP36xx clock data
+ *
+ * Copyright (C) 2013 Texas Instruments, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+ssi_ssr_div_fck_3430es2: ssi_ssr_div_fck_3430es2@48004a40 {
+	#clock-cells = <0>;
+	compatible = "divider-clock";
+	clocks = <&corex2_fck>;
+	bit-shift = <8>;
+	reg = <0x48004a40 0x4>;
+	table = < 1 1 >, < 2 2 >, < 3 3 >, < 4 4 >, < 6 6 >, < 8 8 >;
+	bit-mask = <0xf>;
+};
+
+ssi_ssr_fck_3430es2: ssi_ssr_fck_3430es2@48004a00 {
+	#clock-cells = <0>;
+	compatible = "gate-clock";
+	clocks = <&ssi_ssr_div_fck_3430es2>;
+	bit-shift = <0>;
+	reg = <0x48004a00 0x4>;
+};
+
+ssi_sst_fck_3430es2: ssi_sst_fck_3430es2 {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&ssi_ssr_fck_3430es2>;
+	clock-mult = <1>;
+	clock-div = <2>;
+};
+
+hsotgusb_ick: hsotgusb_ick@48004a10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-hsotgusb-interface-clock";
+	clocks = <&core_l3_ick>;
+	reg = <0x48004a10 0x4>;
+	ti,enable-bit = <4>;
+};
+
+ssi_l4_ick: ssi_l4_ick {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&l4_ick>;
+	clock-mult = <1>;
+	clock-div = <1>;
+};
+
+ssi_ick_3430es2: ssi_ick_3430es2@48004a10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-ssi-interface-clock";
+	clocks = <&ssi_l4_ick>;
+	reg = <0x48004a10 0x4>;
+	ti,enable-bit = <0>;
+};
+
+dpll5_ck: dpll5_ck@48004d04 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-dpll-clock";
+	clocks = <&sys_ck>, <&sys_ck>;
+	ti,modes = <0x82>;
+	reg-names = "control", "idlest", "autoidle", "mult-div1";
+	reg = <0x48004d04 0x4>, <0x48004d24 0x4>, <0x48004d34 0x4>, <0x48004d4c 0x4>;
+};
+
+dpll5_m2_ck: dpll5_m2_ck@48004d50 {
+	#clock-cells = <0>;
+	compatible = "divider-clock";
+	clocks = <&dpll5_ck>;
+	reg = <0x48004d50 0x4>;
+	bit-mask = <0x1f>;
+	index-starts-at-one;
+};
+
+dpll5_m2_d20_ck: dpll5_m2_d20_ck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&dpll5_m2_ck>;
+	clock-mult = <1>;
+	clock-div = <20>;
+};
+
+sys_d2_ck: sys_d2_ck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&sys_ck>;
+	clock-mult = <1>;
+	clock-div = <2>;
+};
+
+omap_96m_d2_fck: omap_96m_d2_fck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&omap_96m_fck>;
+	clock-mult = <1>;
+	clock-div = <2>;
+};
+
+omap_96m_d4_fck: omap_96m_d4_fck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&omap_96m_fck>;
+	clock-mult = <1>;
+	clock-div = <4>;
+};
+
+omap_96m_d8_fck: omap_96m_d8_fck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&omap_96m_fck>;
+	clock-mult = <1>;
+	clock-div = <8>;
+};
+
+omap_96m_d10_fck: omap_96m_d10_fck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&omap_96m_fck>;
+	clock-mult = <1>;
+	clock-div = <10>;
+};
+
+dpll5_m2_d4_ck: dpll5_m2_d4_ck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&dpll5_m2_ck>;
+	clock-mult = <1>;
+	clock-div = <4>;
+};
+
+dpll5_m2_d8_ck: dpll5_m2_d8_ck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&dpll5_m2_ck>;
+	clock-mult = <1>;
+	clock-div = <8>;
+};
+
+dpll5_m2_d16_ck: dpll5_m2_d16_ck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&dpll5_m2_ck>;
+	clock-mult = <1>;
+	clock-div = <16>;
+};
+
+usim_mux_fck: usim_mux_fck@48004c40 {
+	#clock-cells = <0>;
+	compatible = "mux-clock";
+	clocks = <&sys_ck>, <&dpll5_m2_d20_ck>, <&sys_d2_ck>, <&omap_96m_d2_fck>, <&omap_96m_d4_fck>, <&omap_96m_d8_fck>, <&omap_96m_d10_fck>, <&dpll5_m2_d4_ck>, <&dpll5_m2_d8_ck>, <&dpll5_m2_d16_ck>;
+	bit-shift = <3>;
+	reg = <0x48004c40 0x4>;
+	table = <&sys_ck 1>, <&dpll5_m2_d20_ck 10>, <&sys_d2_ck 2>, <&omap_96m_d2_fck 3>, <&omap_96m_d4_fck 4>, <&omap_96m_d8_fck 5>, <&omap_96m_d10_fck 6>, <&dpll5_m2_d4_ck 7>, <&dpll5_m2_d8_ck 8>, <&dpll5_m2_d16_ck 9>;
+	bit-mask = <0xf>;
+};
+
+usim_fck: usim_fck@48004c00 {
+	#clock-cells = <0>;
+	compatible = "gate-clock";
+	clocks = <&usim_mux_fck>;
+	bit-shift = <9>;
+	reg = <0x48004c00 0x4>;
+};
+
+usim_ick: usim_ick@48004c10 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-interface-clock";
+	clocks = <&wkup_l4_ick>;
+	reg = <0x48004c10 0x4>;
+	ti,enable-bit = <9>;
+};

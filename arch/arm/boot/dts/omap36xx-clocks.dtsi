@@ -1,0 +1,80 @@
+/*
+ * Device Tree Source for OMAP36xx clock data
+ *
+ * Copyright (C) 2013 Texas Instruments, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+dpll4_ck: dpll4_ck@48004d00 {
+	#clock-cells = <0>;
+	compatible = "ti,omap3-dpll-per-j-type-clock";
+	clocks = <&sys_ck>, <&sys_ck>;
+	ti,modes = <0x82>;
+	reg-names = "control", "idlest", "autoidle", "mult-div1";
+	reg = <0x48004d00 0x4>, <0x48004d20 0x4>, <0x48004d30 0x4>, <0x48004d44 0x4>;
+};
+
+dpll4_m2x2_ck: dpll4_m2x2_ck@48004d00 {
+	#clock-cells = <0>;
+	compatible = "ti,hsdiv-gate-clock";
+	clocks = <&dpll4_m2x2_mul_ck>;
+	reg = <0x48004d00 0x4>;
+	ti,enable-bit = <0x1b>;
+	ti,set-bit-to-disable;
+};
+
+dpll3_m3x2_ck: dpll3_m3x2_ck@48004d00 {
+	#clock-cells = <0>;
+	compatible = "ti,hsdiv-gate-clock";
+	clocks = <&dpll3_m3x2_mul_ck>;
+	reg = <0x48004d00 0x4>;
+	ti,enable-bit = <0xc>;
+	ti,set-bit-to-disable;
+};
+
+dpll4_m3x2_ck: dpll4_m3x2_ck@48004d00 {
+	#clock-cells = <0>;
+	compatible = "ti,hsdiv-gate-clock";
+	clocks = <&dpll4_m3x2_mul_ck>;
+	reg = <0x48004d00 0x4>;
+	ti,enable-bit = <0x1c>;
+	ti,set-bit-to-disable;
+};
+
+dpll4_m5x2_ck: dpll4_m5x2_ck@48004d00 {
+	#clock-cells = <0>;
+	compatible = "ti,hsdiv-gate-clock";
+	clocks = <&dpll4_m5x2_mul_ck>;
+	reg = <0x48004d00 0x4>;
+	ti,enable-bit = <0x1e>;
+	ti,set-rate-parent;
+	ti,set-bit-to-disable;
+};
+
+dpll4_m6x2_ck: dpll4_m6x2_ck@48004d00 {
+	#clock-cells = <0>;
+	compatible = "ti,hsdiv-gate-clock";
+	clocks = <&dpll4_m6x2_mul_ck>;
+	reg = <0x48004d00 0x4>;
+	ti,enable-bit = <0x1f>;
+	ti,set-bit-to-disable;
+};
+
+omap_192m_alwon_fck: omap_192m_alwon_fck {
+	#clock-cells = <0>;
+	compatible = "fixed-factor-clock";
+	clocks = <&dpll4_m2x2_ck>;
+	clock-mult = <1>;
+	clock-div = <1>;
+};
+
+uart4_fck: uart4_fck@48005000 {
+	#clock-cells = <0>;
+	compatible = "ti,gate-clock";
+	clocks = <&per_48m_fck>;
+	reg = <0x48005000 0x4>;
+	ti,enable-bit = <18>;
+};

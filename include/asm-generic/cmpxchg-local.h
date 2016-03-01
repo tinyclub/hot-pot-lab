@@ -2,10 +2,9 @@
 #define __ASM_GENERIC_CMPXCHG_LOCAL_H
 
 #include <linux/types.h>
-#include <linux/irqflags.h>
+#include <dim-sum/irqflags.h>
 
-extern unsigned long wrong_size_cmpxchg(volatile void *ptr)
-	__noreturn;
+extern unsigned long wrong_size_cmpxchg(volatile void *ptr);
 
 /*
  * Generic version of __cmpxchg_local (disables interrupts). Takes an unsigned

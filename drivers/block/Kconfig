@@ -1,0 +1,9 @@
+menu "block drivers"
+
+config SD
+	bool "sd supports"
+	default n
+	help
+	  Say Y here to support sd.
+
+endmenu

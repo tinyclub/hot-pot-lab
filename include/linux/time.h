@@ -1,239 +1,209 @@
 #ifndef _LINUX_TIME_H
 #define _LINUX_TIME_H
 
-# include <linux/cache.h>
-# include <linux/seqlock.h>
-# include <linux/math64.h>
-# include <linux/time64.h>
+#include <linux/types.h>
 
-extern struct timezone sys_tz;
+#ifdef __KERNEL__
+#include <dim-sum/seqlock.h>
+#endif
 
-#define TIME_T_MAX	(time_t)((1UL << ((sizeof(time_t) << 3) - 1)) - 1)
-
-static inline int timespec_equal(const struct timespec *a,
-                                 const struct timespec *b)
-{
-	return (a->tv_sec == b->tv_sec) && (a->tv_nsec == b->tv_nsec);
-}
-
-/*
- * lhs < rhs:  return <0
- * lhs == rhs: return 0
- * lhs > rhs:  return >0
+#ifndef _STRUCT_TIMESPEC
+#define _STRUCT_TIMESPEC
+/**
+ * 日期和时间
  */
-static inline int timespec_compare(const struct timespec *lhs, const struct timespec *rhs)
-{
-	if (lhs->tv_sec < rhs->tv_sec)
-		return -1;
-	if (lhs->tv_sec > rhs->tv_sec)
-		return 1;
-	return lhs->tv_nsec - rhs->tv_nsec;
-}
+struct timespec {
+	/**
+	 * 自1970/01/01午夜以来经过的秒数。
+	 */
+	time_t	tv_sec;		/* seconds */
+	/**
+	 * 上一秒以来，经过的纳秒数。
+	 */
+	long	tv_nsec;	/* nanoseconds */
+};
+#endif /* _STRUCT_TIMESPEC */
 
-static inline int timeval_compare(const struct timeval *lhs, const struct timeval *rhs)
-{
-	if (lhs->tv_sec < rhs->tv_sec)
-		return -1;
-	if (lhs->tv_sec > rhs->tv_sec)
-		return 1;
-	return lhs->tv_usec - rhs->tv_usec;
-}
+struct timeval {
+	time_t		tv_sec;		/* seconds */
+	suseconds_t	tv_usec;	/* microseconds */
+};
 
-extern time64_t mktime64(const unsigned int year, const unsigned int mon,
-			const unsigned int day, const unsigned int hour,
-			const unsigned int min, const unsigned int sec);
+struct timezone {
+	int	tz_minuteswest;	/* minutes west of Greenwich */
+	int	tz_dsttime;	/* type of dst correction */
+};
+
+#ifdef __KERNEL__
+
+/* Parameters used to convert the timespec values */
+#ifndef USEC_PER_SEC
+#define USEC_PER_SEC (1000000L)
+#endif
+
+#ifndef NSEC_PER_SEC
+#define NSEC_PER_SEC (1000000000L)
+#endif
+
+#ifndef NSEC_PER_USEC
+#define NSEC_PER_USEC (1000L)
+#endif
+
+static __inline__ int timespec_equal(struct timespec *a, struct timespec *b) 
+{ 
+	return (a->tv_sec == b->tv_sec) && (a->tv_nsec == b->tv_nsec);
+} 
+
+/* Converts Gregorian date to seconds since 1970-01-01 00:00:00.
+ * Assumes input in normal date format, i.e. 1980-12-31 23:59:59
+ * => year=1980, mon=12, day=31, hour=23, min=59, sec=59.
+ *
+ * [For the Julian calendar (which was used in Russia before 1917,
+ * Britain & colonies before 1752, anywhere else before 1582,
+ * and is still in use by some communities) leave out the
+ * -year/100+year/400 terms, and add 10.]
+ *
+ * This algorithm was first published by Gauss (I think).
+ *
+ * WARNING: this function will overflow on 2106-02-07 06:28:16 on
+ * machines were long is 32-bit! (However, as time_t is signed, we
+ * will already get problems at other places on 2038-01-19 03:14:08)
+ */
+static inline unsigned long
+mktime (unsigned int year, unsigned int mon,
+	unsigned int day, unsigned int hour,
+	unsigned int min, unsigned int sec)
+{
+	if (0 >= (int) (mon -= 2)) {	/* 1..12 -> 11,12,1..10 */
+		mon += 12;		/* Puts Feb last since it has leap day */
+		year -= 1;
+	}
+
+	return (((
+		(unsigned long) (year/4 - year/100 + year/400 + 367*mon/12 + day) +
+			year*365 - 719499
+	    )*24 + hour /* now have hours */
+	  )*60 + min /* now have minutes */
+	)*60 + sec; /* finally seconds */
+}
 
 /**
- * Deprecated. Use mktime64().
+ * 存放当前时间和日期
  */
-static inline unsigned long mktime(const unsigned int year,
-			const unsigned int mon, const unsigned int day,
-			const unsigned int hour, const unsigned int min,
-			const unsigned int sec)
-{
-	return mktime64(year, mon, day, hour, min, sec);
-}
-
-extern void set_normalized_timespec(struct timespec *ts, time_t sec, s64 nsec);
-
-/*
- * timespec_add_safe assumes both values are positive and checks
- * for overflow. It will return TIME_T_MAX if the reutrn would be
- * smaller then either of the arguments.
+extern struct timespec xtime;
+/**
+ * 墙上时间。存放将被加到xtime上的秒数和纳秒数。以此来获得单的时间流。
+ * 避免闰秒和同步时突发改变xtime的值，使得xtime的增长不是单向的。
  */
-extern struct timespec timespec_add_safe(const struct timespec lhs,
-					 const struct timespec rhs);
+extern struct timespec wall_to_monotonic;
 
+#if 0
+extern seqlock_t xtime_lock;
 
-static inline struct timespec timespec_add(struct timespec lhs,
-						struct timespec rhs)
-{
-	struct timespec ts_delta;
-	set_normalized_timespec(&ts_delta, lhs.tv_sec + rhs.tv_sec,
-				lhs.tv_nsec + rhs.tv_nsec);
-	return ts_delta;
+static inline unsigned long get_seconds(void)
+{ 
+	return xtime.tv_sec;
 }
+#endif
 
-/*
- * sub = lhs - rhs, in normalized form
- */
-static inline struct timespec timespec_sub(struct timespec lhs,
-						struct timespec rhs)
-{
-	struct timespec ts_delta;
-	set_normalized_timespec(&ts_delta, lhs.tv_sec - rhs.tv_sec,
-				lhs.tv_nsec - rhs.tv_nsec);
-	return ts_delta;
-}
+struct timespec current_kernel_time(void);
 
-/*
- * Returns true if the timespec is norm, false if denorm:
- */
-static inline bool timespec_valid(const struct timespec *ts)
-{
-	/* Dates before 1970 are bogus */
-	if (ts->tv_sec < 0)
-		return false;
-	/* Can't have more nanoseconds then a second */
-	if ((unsigned long)ts->tv_nsec >= NSEC_PER_SEC)
-		return false;
-	return true;
-}
+#define CURRENT_TIME (get_jiffies_64())
+#define CURRENT_TIME_SEC ((struct timespec) { xtime.tv_sec, 0 })
 
-static inline bool timespec_valid_strict(const struct timespec *ts)
-{
-	if (!timespec_valid(ts))
-		return false;
-	/* Disallow values that could overflow ktime_t */
-	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
-		return false;
-	return true;
-}
-
-static inline bool timeval_valid(const struct timeval *tv)
-{
-	/* Dates before 1970 are bogus */
-	if (tv->tv_sec < 0)
-		return false;
-
-	/* Can't have more microseconds then a second */
-	if (tv->tv_usec < 0 || tv->tv_usec >= USEC_PER_SEC)
-		return false;
-
-	return true;
-}
+extern void do_gettimeofday(struct timeval *tv);
+extern int do_settimeofday(struct timespec *tv);
+extern int do_sys_settimeofday(struct timespec *tv, struct timezone *tz);
+extern void clock_was_set(void); // call when ever the clock is set
+extern int do_posix_clock_monotonic_gettime(struct timespec *tp);
+extern long do_nanosleep(struct timespec *t);
+extern long do_utimes(char __user * filename, struct timeval * times);
+struct itimerval;
+extern int do_setitimer(int which, struct itimerval *value, struct itimerval *ovalue);
+extern int do_getitimer(int which, struct itimerval *value);
+extern void getnstimeofday (struct timespec *tv);
 
 extern struct timespec timespec_trunc(struct timespec t, unsigned gran);
 
-#define CURRENT_TIME		(current_kernel_time())
-#define CURRENT_TIME_SEC	((struct timespec) { get_seconds(), 0 })
+static inline void
+set_normalized_timespec (struct timespec *ts, time_t sec, long nsec)
+{
+	while (nsec > NSEC_PER_SEC) {
+		nsec -= NSEC_PER_SEC;
+		++sec;
+	}
+	while (nsec < 0) {
+		nsec += NSEC_PER_SEC;
+		--sec;
+	}
+	ts->tv_sec = sec;
+	ts->tv_nsec = nsec;
+}
 
-/* Some architectures do not supply their own clocksource.
- * This is mainly the case in architectures that get their
- * inter-tick times by reading the counter on their interval
- * timer. Since these timers wrap every tick, they're not really
- * useful as clocksources. Wrapping them to act like one is possible
- * but not very efficient. So we provide a callout these arches
- * can implement for use with the jiffies clocksource to provide
- * finer then tick granular time.
- */
-#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
-extern u32 (*arch_gettimeoffset)(void);
-#endif
+#endif /* __KERNEL__ */
 
-struct itimerval;
-extern int do_setitimer(int which, struct itimerval *value,
-			struct itimerval *ovalue);
-extern int do_getitimer(int which, struct itimerval *value);
+#define NFDBITS			__NFDBITS
 
-extern unsigned int alarm_setitimer(unsigned int seconds);
-
-extern long do_utimes(int dfd, const char __user *filename, struct timespec *times, int flags);
-
-struct tms;
-extern void do_sys_times(struct tms *);
+#define FD_SETSIZE		__FD_SETSIZE
+#define FD_SET(fd,fdsetp)	__FD_SET(fd,fdsetp)
+#define FD_CLR(fd,fdsetp)	__FD_CLR(fd,fdsetp)
+#define FD_ISSET(fd,fdsetp)	__FD_ISSET(fd,fdsetp)
+#define FD_ZERO(fdsetp)		__FD_ZERO(fdsetp)
 
 /*
- * Similar to the struct tm in userspace <time.h>, but it needs to be here so
- * that the kernel source is self contained.
+ * Names of the interval timers, and structure
+ * defining a timer setting.
  */
-struct tm {
-	/*
-	 * the number of seconds after the minute, normally in the range
-	 * 0 to 59, but can be up to 60 to allow for leap seconds
-	 */
-	int tm_sec;
-	/* the number of minutes after the hour, in the range 0 to 59*/
-	int tm_min;
-	/* the number of hours past midnight, in the range 0 to 23 */
-	int tm_hour;
-	/* the day of the month, in the range 1 to 31 */
-	int tm_mday;
-	/* the number of months since January, in the range 0 to 11 */
-	int tm_mon;
-	/* the number of years since 1900 */
-	long tm_year;
-	/* the number of days since Sunday, in the range 0 to 6 */
-	int tm_wday;
-	/* the number of days since January 1, in the range 0 to 365 */
-	int tm_yday;
+#define	ITIMER_REAL	0
+#define	ITIMER_VIRTUAL	1
+#define	ITIMER_PROF	2
+
+struct  itimerspec {
+        struct  timespec it_interval;    /* timer period */
+        struct  timespec it_value;       /* timer expiration */
 };
 
-void time_to_tm(time_t totalsecs, int offset, struct tm *result);
+struct	itimerval {
+	struct	timeval it_interval;	/* timer interval */
+	struct	timeval it_value;	/* current value */
+};
 
-/**
- * timespec_to_ns - Convert timespec to nanoseconds
- * @ts:		pointer to the timespec variable to be converted
- *
- * Returns the scalar nanosecond representation of the timespec
- * parameter.
- */
-static inline s64 timespec_to_ns(const struct timespec *ts)
-{
-	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
-}
 
-/**
- * timeval_to_ns - Convert timeval to nanoseconds
- * @ts:		pointer to the timeval variable to be converted
- *
- * Returns the scalar nanosecond representation of the timeval
- * parameter.
+/*
+ * The IDs of the various system clocks (for POSIX.1b interval timers).
  */
-static inline s64 timeval_to_ns(const struct timeval *tv)
-{
-	return ((s64) tv->tv_sec * NSEC_PER_SEC) +
-		tv->tv_usec * NSEC_PER_USEC;
-}
+/**
+ * 该虚拟时钟表示系统的实时时钟-本质上是xtime变量的值。
+ */
+#define CLOCK_REALTIME		  0
+/**
+ * 该虚拟时钟表示由于与外部时间源同步，每次回到初值的系统实时时钟。
+ * 实际上，该时钟由xtime和wall_to_monotonic两个变量的和表示。
+ * 该时钟的分辨度由clock_getres()返回，返回值为999,848ns
+ */
+#define CLOCK_MONOTONIC	  1
+#define CLOCK_PROCESS_CPUTIME_ID 2
+#define CLOCK_THREAD_CPUTIME_ID	 3
+#define CLOCK_REALTIME_HR	 4
+#define CLOCK_MONOTONIC_HR	  5
 
-/**
- * ns_to_timespec - Convert nanoseconds to timespec
- * @nsec:	the nanoseconds value to be converted
- *
- * Returns the timespec representation of the nsec parameter.
+/*
+ * The IDs of various hardware clocks
  */
-extern struct timespec ns_to_timespec(const s64 nsec);
 
-/**
- * ns_to_timeval - Convert nanoseconds to timeval
- * @nsec:	the nanoseconds value to be converted
- *
- * Returns the timeval representation of the nsec parameter.
- */
-extern struct timeval ns_to_timeval(const s64 nsec);
 
-/**
- * timespec_add_ns - Adds nanoseconds to a timespec
- * @a:		pointer to timespec to be incremented
- * @ns:		unsigned nanoseconds value to be added
- *
- * This must always be inlined because its used from the x86-64 vdso,
- * which cannot call other kernel functions.
+#define CLOCK_SGI_CYCLE 10
+#define MAX_CLOCKS 16
+#define CLOCKS_MASK  (CLOCK_REALTIME | CLOCK_MONOTONIC | \
+                     CLOCK_REALTIME_HR | CLOCK_MONOTONIC_HR)
+#define CLOCKS_MONO (CLOCK_MONOTONIC & CLOCK_MONOTONIC_HR)
+
+/*
+ * The various flags for setting POSIX.1b interval timers.
  */
-static __always_inline void timespec_add_ns(struct timespec *a, u64 ns)
-{
-	a->tv_sec += __iter_div_u64_rem(a->tv_nsec + ns, NSEC_PER_SEC, &ns);
-	a->tv_nsec = ns;
-}
+
+#define TIMER_ABSTIME 0x01
+
 
 #endif
+
