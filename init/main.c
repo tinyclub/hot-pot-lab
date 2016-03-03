@@ -202,8 +202,8 @@ asmlinkage void __init start_master(void)
 	time_init();
 	setup_timer();
 	serial_init();
-	mmc_init();
-	omap_gpio_init();
+	//mmc_init();
+	//omap_gpio_init();
 	//初始化文件系统
 	//vfs_caches_init(num_physpages);
 	local_irq_enable();

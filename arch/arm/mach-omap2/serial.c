@@ -52,7 +52,7 @@ struct uart_omap_port g_uart_omap_port[6] = {
 		{
 			.regshift = 2,
 			.irq = 72,
-			.membase = AM33XX_L4_WK_IO_ADDRESS(AM33XX_UART1_BASE),
+			.membase = 0xfb020000,//AM33XX_L4_WK_IO_ADDRESS(AM33XX_UART1_BASE),
 			.baud = 115200,
 			.uartclk = 48000000,
 			{
@@ -585,19 +585,22 @@ void omap_serial_init(void)
 {
 	struct uart_omap_port *up;
 	int i;
-
-	for (i = 0; i < 5; i++) {
+	printk("omap_serial_init step 1\n");
+return;
+	for (i = 0; i < 1; i++) {
 		up = &g_uart_omap_port[i];
+		printk("omap_serial_init step 2\n");
 
 		serial_omap_set_mux_conf(up);
 		setup_irq(up->irq, serial_omap_irq, up);
+		printk("omap_serial_init step 3\n");
 
 		if (i != 0) {
 			unsigned int temp;
 			void *addr;
 			int j = 1000;
 
-			addr = AM33XX_L4_WK_IO_ADDRESS(0x44e00000 + up->clkctrl_offset);
+			addr = 0xfb020000 + up->clkctrl_offset;//OMAP2_L4_PER_IO_ADDRESS(0x49020000 + up->clkctrl_offset);
 			temp = readl(addr);
 
 			temp &= ~0x3;
@@ -616,6 +619,7 @@ void omap_serial_init(void)
 			temp = calc_divisor(up);
 			serial_omap_early_init(up, temp);
 		}
+		printk("omap_serial_init step 4\n");
 
 		serial_omap_clear_fifos(up);
 		/*
@@ -626,11 +630,14 @@ void omap_serial_init(void)
 			(void) serial_in(up, UART_RX);
 		(void) serial_in(up, UART_IIR);
 		(void) serial_in(up, UART_MSR);
+		printk("omap_serial_init step 5\n");
 
 		up->ier = UART_IER_RLSI | UART_IER_RDI;
 		serial_out(up, UART_IER, up->ier);
+		printk("omap_serial_init step 6\n");
 
 		serial_omap_set_termios(up);
+		printk("omap_serial_init step 7\n");
 	}
 
 	printk("omap_serial_init\n");

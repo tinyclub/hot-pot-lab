@@ -8,10 +8,21 @@
 static int count = 0;
 int task1(void *data)
 {
+	printf("xby_debug in task1, enter\n");
 	while (1)
 	{
-		SysSleep(100);
+		sleep(1);
 		count++; 
+		printf("xby_debug in task1, count is %d\n", count);
+	}
+}
+
+int task2(void *data)
+{
+	printf("xby_debug in task2, enter\n");
+	while (1)
+	{
+		sleep(1);
 	}
 }
 
@@ -147,11 +158,19 @@ void usrAppInit(void)
 			NULL,
 			0
 		);
+	SysTaskCreate(task2,
+			NULL,
+			"task2",
+			10,
+			NULL,
+			0
+		);
+
 	//to do
 	/** 注册cpsw网卡驱动 **/
-	cpsw_net_init();
+	//cpsw_net_init();
 	/** 初始化lwip协议栈 **/
-	dim_sum_lwip_init();
+	//dim_sum_lwip_init();
 
 	start_shell("shell", 6, NULL);	
 }

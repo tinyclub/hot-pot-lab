@@ -313,9 +313,9 @@ __create_page_tables:
 
 //---------------------------------------------
 
-	ldr r7, =L4_WK_AM33XX_PHYS
-	ldr r3, =L4_WK_AM33XX_VIRT
-	ldr r6, =L4_WK_AM33XX_SIZE
+	ldr r7, =L3_44XX_PHYS
+	ldr r3, =L3_44XX_VIRT
+	ldr r6, =L3_44XX_SIZE
 
 	mov r6, r6, lsr #SECTION_SHIFT
 	cmp	r6, #0x0400
@@ -337,9 +337,9 @@ __create_page_tables:
 	addlo	r5, r5, #1
 	blo	1b
 
-	ldr r7, =L4_PER_AM33XX_PHYS
-	ldr r3, =L4_PER_AM33XX_VIRT
-	ldr r6, =L4_PER_AM33XX_SIZE
+	ldr r7, =L4_44XX_PHYS
+	ldr r3, =L4_44XX_VIRT
+	ldr r6, =L4_44XX_SIZE
 
 	mov r6, r6, lsr #SECTION_SHIFT
 	cmp	r6, #0x0800
@@ -361,9 +361,9 @@ __create_page_tables:
 	addlo	r5, r5, #1
 	blo	1b
 
-	ldr r7, =L4_FAST_AM33XX_PHYS
-	ldr r3, =L4_FAST_AM33XX_VIRT
-	ldr r6, =L4_FAST_AM33XX_SIZE
+	ldr r7, =L4_PER_44XX_PHYS
+	ldr r3, =L4_PER_44XX_VIRT
+	ldr r6, =L4_PER_44XX_SIZE
 
 	mov r6, r6, lsr #SECTION_SHIFT
 	cmp	r6, #0x0800
@@ -385,6 +385,29 @@ __create_page_tables:
 	addlo	r5, r5, #1
 	blo	1b
 
+	ldr r7, =L4_PER_34XX_PHYS
+	ldr r3, =L4_PER_34XX_VIRT
+	ldr r6, =L4_PER_34XX_SIZE
+
+	mov r6, r6, lsr #SECTION_SHIFT
+	cmp	r6, #0x0800
+	movhi	r6, #0x0800
+	
+	mov	r3, r3, lsr #SECTION_SHIFT
+	mov	r3, r3, lsl #PMD_ORDER
+
+	add	r0, r4, r3
+	mov	r3, r7, lsr #SECTION_SHIFT
+	ldr	r7, [r10, #PROCINFO_IO_MMUFLAGS] @ io_mmuflags
+	orr	r3, r7, r3, lsl #SECTION_SHIFT
+	orr	r3, r3, #PMD_SECT_XN
+
+	mov r5, #0
+1:	str	r3, [r0], #4
+	add r3, r3, #1 << 20
+	cmp r5, r6
+	addlo	r5, r5, #1
+	blo	1b
 
 //---------------------------------------------
 #if defined(CONFIG_ARCH_NETWINDER) || defined(CONFIG_ARCH_CATS)

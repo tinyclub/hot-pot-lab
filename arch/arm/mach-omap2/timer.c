@@ -100,18 +100,22 @@ void am33xx_timer_init(void)
 	unsigned int t1, t2;
 	int i;
 	memset(&clkev, 0 , sizeof(clkev));
-	clkev.io_base = (void *)OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER2_PHYS);
+	clkev.io_base = (void *)0xfa320000;//OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER2_PHYS);
 	clkev.rate = 24000000;
 	clkev.irq = 68;
-	
+
+	early_print("xby_debug in am33xx_timer_init step 1\n");
 	memset(&clkev1, 0 , sizeof(clkev1));
-	clkev1.io_base = (void *)OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER3_PHYS);
+	clkev1.io_base = (void *)0xfa318000;//OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER3_PHYS);
 	clkev1.rate = 24000000;
 	
 	__omap_dm_timer_init_regs(&clkev);
 	__omap_dm_timer_enable_posted(&clkev);
+	early_print("xby_debug in am33xx_timer_init step 2\n");
 	omap2_gp_timer_set_mode(&clkev);
+	early_print("xby_debug in am33xx_timer_init step 2.1\n");
 
+#if 0
 	{
 		unsigned int temp;
 		unsigned int addr;
@@ -121,7 +125,7 @@ void am33xx_timer_init(void)
 		temp &= ~0x3;
 		temp |= 0x2;
 		writel(temp, addr);
-		
+		early_print("xby_debug in am33xx_timer_init step 2.2\n");
 		do {
 			temp = readl(addr);
 			temp = (temp >> 16) & 0x3;
@@ -135,7 +139,9 @@ void am33xx_timer_init(void)
 		addr = (void *)AM33XX_L4_WK_IO_ADDRESS(0x44E00500 + 0xc);
 		writel(0x1, addr);
 	}	
-	
+	early_print("xby_debug in am33xx_timer_init step 3\n");
+#endif
+
 	__omap_dm_timer_init_regs(&clkev1);
 	__omap_dm_timer_load_start(&clkev1,
 				   OMAP_TIMER_CTRL_ST | OMAP_TIMER_CTRL_AR, 0,
@@ -149,9 +155,11 @@ void am33xx_timer_init(void)
 	printk("t1 0x%x t2 0x%x\n", t1, t2);
 #endif			   
 				   
-				   
+	early_print("xby_debug in am33xx_timer_init step 4\n");
 	setup_irq(clkev.irq, omap2_gp_timer_interrupt, NULL);
+	early_print("xby_debug in am33xx_timer_init step 5\n");
 	__omap_dm_timer_int_enable(&clkev, OMAP_TIMER_INT_OVERFLOW);
+	early_print("xby_debug in am33xx_timer_init step 6\n");
 	
 }
 
