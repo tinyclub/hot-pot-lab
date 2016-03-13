@@ -60,6 +60,8 @@ ENTRY(boot_entry)
  THUMB(	.thumb			)	@ switch to Thumb now.
  THUMB(1:			)
 
+ b __xby_debug_nommu
+
 /* 初始化虚拟化支持 */
 #ifdef CONFIG_ARM_VIRT_EXT
 	bl	__hyp_stub_install

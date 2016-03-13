@@ -1,0 +1,1 @@
+qemu-system-arm -M vexpress-a9 -m 512M -kernel arch/arm/boot/zImage -serial stdio -s -append "root=/dev/mmcblk0 rw console=ttyAMA0 init=/linuxrc" -smp 4 -sd a9rootfs.ext3

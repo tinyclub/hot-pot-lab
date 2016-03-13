@@ -10,8 +10,8 @@
 #define IOMEM(x)		((void __force __iomem *)(x))
 #endif
 
-#define L4_WK_AM33XX_BASE	0x49020000
-
+#define L4_WK_AM33XX_BASE     0x10000000
+//#define L4_WK_AM33XX_BASE	0x49020000
 //#define L4_WK_AM33XX_BASE	0x44C00000
 #define L4_PER_AM33XX_BASE	0x48000000
 #define L4_FAST_AM33XX_BASE	0x4A000000
