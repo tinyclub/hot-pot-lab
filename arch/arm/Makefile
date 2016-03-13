@@ -242,13 +242,14 @@ endif
 machdirs := $(patsubst %,arch/arm/mach-%/,$(machine-y))
 platdirs := $(patsubst %,arch/arm/plat-%/,$(plat-y))
 
-ifneq ($(CONFIG_ARCH_MULTIPLATFORM),y)
+#xby_debug, force
+#ifneq ($(CONFIG_ARCH_MULTIPLATFORM),y)
 ifeq ($(KBUILD_SRC),)
 KBUILD_CPPFLAGS += $(patsubst %,-I%include,$(machdirs) $(platdirs))
 else
 KBUILD_CPPFLAGS += $(patsubst %,-I$(srctree)/%include,$(machdirs) $(platdirs))
 endif
-endif
+#endif
 
 export	TEXT_OFFSET GZFLAGS MMUEXT
 

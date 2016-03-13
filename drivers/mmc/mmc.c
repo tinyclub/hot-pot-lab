@@ -28,7 +28,7 @@
 
 #include <asm/div64.h>
 #include <asm/delay.h>
-#include <mach/io.h>
+//#include <mach/io.h>
 #include "mmc.h"
 #include "omap_mmc.h"
 

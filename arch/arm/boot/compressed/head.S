@@ -123,6 +123,7 @@
 start:
 		.type	start,#function
 		.rept	7
+
 		mov	r0, r0
 		.endr
    ARM(		mov	r0, r0		)

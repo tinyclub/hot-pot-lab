@@ -70,7 +70,7 @@ ENTRY(boot_entry)
 	/* 得到处理器ID */
 	mrc	p15, 0, r9, c0, c0		
 	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid	
-	movs	r10, r5				@ invalid processor (r5=0)?
+	movs	r10, r5				@ invalid processor (r5=0)? 
  THUMB( it	eq )		@ force fixup-able long branch encoding
 
 	beq	__error_p			@ yes, error 'p'
@@ -103,7 +103,6 @@ ENTRY(boot_entry)
 	bl	__fixup_pv_table
 #endif
 	bl	__create_page_tables
-
 	/*
 	 * The following calls CPU specific code in a position independent
 	 * manner.  See arch/arm/mm/proc-*.S for details.  r10 = base of
@@ -313,6 +312,7 @@ __create_page_tables:
 
 //---------------------------------------------
 
+#if 1
 	ldr r7, =L3_44XX_PHYS
 	ldr r3, =L3_44XX_VIRT
 	ldr r6, =L3_44XX_SIZE
@@ -408,6 +408,7 @@ __create_page_tables:
 	cmp r5, r6
 	addlo	r5, r5, #1
 	blo	1b
+#endif
 
 //---------------------------------------------
 #if defined(CONFIG_ARCH_NETWINDER) || defined(CONFIG_ARCH_CATS)

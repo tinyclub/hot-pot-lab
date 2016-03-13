@@ -102,6 +102,7 @@ __mmap_switched:
 	cmp	r7, #0
 	bicne	r4, r0, #CR_A			@ Clear 'A' bit
 	stmneia	r7, {r0, r4}			@ Save control register values
+
 	b	start_master
 ENDPROC(__mmap_switched)
 

@@ -1,7 +1,7 @@
 #ifndef OMAP_MMC_H_
 #define OMAP_MMC_H_
 
-#include <mach/io.h>
+//#include <mach/io.h>
 
 struct hsmmc {
 	unsigned char res1[0x10];

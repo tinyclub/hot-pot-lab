@@ -34,7 +34,7 @@
 #include <asm/param.h>
 #include <asm/processor.h>
 #include <asm/delay.h>
-#include <mach/io.h>
+//#include <mach/io.h>
 
 #include "mmc.h"
 #include "omap_mmc.h"

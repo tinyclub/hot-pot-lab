@@ -27,9 +27,9 @@
 
 //#include <common.h>
 #include <asm/io.h>
-#include <mach/mem.h>
+//#include <mach/mem.h>
 #include <asm/cpu.h>
-#include <mach/sys_proto.h>
+//#include <mach/sys_proto.h>
 #include <asm/delay.h>
 //#include <command.h>
 
@@ -46,7 +46,7 @@ volatile unsigned int boot_flash_env_addr;
 #define OMAP34XX_GPMC_BASE		0x6E000000
 struct gpmc *gpmc_cfg;
 
-#define CONFIG_CMD_NAND
+//#define CONFIG_CMD_NAND
 
 #if defined(CONFIG_CMD_NAND)
 static const u32 gpmc_m_nand[GPMC_MAX_REG] = {

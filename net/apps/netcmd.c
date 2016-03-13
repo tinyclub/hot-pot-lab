@@ -280,10 +280,10 @@ int net_ip_cmd(int argc, char **args)
 		netif_set_addr(&ndev->lwip_netif, &ndev->ipaddr, &ndev->netmask, &ndev->gateway);		
 		
 	} else if (!strcmp(args[1], "debugon")) {   /** 临时添加，用于cpsw调试使用 **/
-		cpsw_net_debug = 1;
+		//cpsw_net_debug = 1;
 		
 	} else if (!strcmp(args[1], "debugoff")) {
-		cpsw_net_debug = 0;
+		//cpsw_net_debug = 0;
 		
 	} else {
 		goto end;;

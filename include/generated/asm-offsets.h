@@ -20,13 +20,12 @@
 #define TI_EXEC_DOMAIN 16 /* offsetof(struct thread_info, exec_domain)	@ */
 #define TI_CPU 20 /* offsetof(struct thread_info, cpu)	@ */
 #define TI_CPU_DOMAIN 24 /* offsetof(struct thread_info, cpu_domain)	@ */
-#define TI_CPU_SAVE 528 /* offsetof(struct thread_info, cpu_context)	@ */
+#define TI_CPU_SAVE 520 /* offsetof(struct thread_info, cpu_context)	@ */
 #define TI_USED_CP 32 /* offsetof(struct thread_info, used_cp)	@ */
 #define TI_TP_VALUE 48 /* offsetof(struct thread_info, tp_value)	@ */
 #define TI_FPSTATE 56 /* offsetof(struct thread_info, fpstate)	@ */
-#define TI_CPU_SAVE 528 /* offsetof(struct thread_info, cpu_context)	@ */
+#define TI_CPU_SAVE 520 /* offsetof(struct thread_info, cpu_context)	@ */
 #define TI_VFPSTATE 200 /* offsetof(struct thread_info, vfpstate)	@ */
-#define TI_THUMBEE_STATE 472 /* offsetof(struct thread_info, thumbee_state)	@ */
 
 #define S_R0 0 /* offsetof(struct pt_regs, ARM_r0)	@ */
 #define S_R1 4 /* offsetof(struct pt_regs, ARM_r1)	@ */

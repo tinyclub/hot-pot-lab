@@ -904,6 +904,14 @@ config ARCH_OMAP2PLUS
 
 endchoice
 
+config ARCH_VEXPRESS
+        bool "test 1"
+        default y
+
+config VEXPRESS
+        bool "test 2"
+        default y
+
 menu "Multiple platform selection"
 
 comment "CPU Core family selection"
@@ -1604,8 +1612,8 @@ endchoice
 
 config PAGE_OFFSET
 	hex
-	default 0x40000000 if VMSPLIT_1G
-	default 0x80000000 if VMSPLIT_2G
+#	default 0x40000000 if VMSPLIT_1G
+#	default 0x80000000 if VMSPLIT_2G
 	default 0xC0000000
 
 config NR_CPUS

@@ -83,6 +83,7 @@ static void icedcc_putc(int ch)
 #define putc(ch)	icedcc_putc(ch)
 #endif
 
+#define putc(ch)
 static void putstr(const char *ptr)
 {
 	char c;
@@ -145,8 +146,10 @@ decompress_kernel(unsigned long output_start, unsigned long free_mem_ptr_p,
 	arch_decomp_setup();
 
 	putstr("Uncompressing Linux...");
+
 	ret = do_decompress(input_data, input_data_end - input_data,
 			    output_data, error);
+
 	if (ret)
 		error("decompressor returned an error");
 	else

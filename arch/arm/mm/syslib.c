@@ -23,9 +23,9 @@
 
 //#include <common.h>
 #include <asm/io.h>
-#include <mach/mem.h>
+//#include <mach/mem.h>
 //#include <asm/arch/clocks.h>
-#include <mach/sys_proto.h>
+//#include <mach/sys_proto.h>
 
 /************************************************************
  * sdelay() - simple spin loop.  Will be constant time as

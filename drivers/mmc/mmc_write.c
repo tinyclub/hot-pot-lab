@@ -23,7 +23,7 @@
 
 #include <asm/div64.h>
 
-#include <mach/io.h>
+//#include <mach/io.h>
 #include "mmc.h"
 
 
