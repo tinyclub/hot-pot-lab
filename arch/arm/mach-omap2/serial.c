@@ -51,122 +51,13 @@ struct uart_omap_port {
 struct uart_omap_port g_uart_omap_port[6] = {
 		{
 			.regshift = 2,
-			.irq = 72,
-			.membase = 0xfb020000,//AM33XX_L4_WK_IO_ADDRESS(AM33XX_UART1_BASE),
+			.irq = 74,
+			.membase = (unsigned char *)0xfb020000,//AM33XX_L4_WK_IO_ADDRESS(AM33XX_UART1_BASE),
 			.baud = 115200,
 			.uartclk = 48000000,
-			{
-				{
-					.pin_offset = 0x970,
-					.pin_value = OMAP_MUX_MODE0 | AM33XX_PIN_INPUT_PULLUP,
-				},
-				{
-					.pin_offset = 0x974,
-					.pin_value = OMAP_MUX_MODE0 | AM33XX_PULL_ENBL,
-				},
-			},
 			.id = 0,
 		},
-
-		{
-			.regshift = 2,
-			.irq = 73,
-			.membase = OMAP2_L4_PER_IO_ADDRESS(AM33XX_UART2_BASE),
-			.baud = 115200,
-			.uartclk = 48000000,
-			{
-				{
-					.pin_offset = 0x978,
-					.pin_value = OMAP_MUX_MODE0 | AM33XX_PIN_INPUT_PULLUP,
-				},
-				{
-					.pin_offset = 0x97c,
-					.pin_value = OMAP_MUX_MODE0 | AM33XX_PULL_ENBL,
-				},
-			},
-			.clkctrl_offset = 0x6c,
-			.id = 1,
-		},
-
-		{
-			.regshift = 2,
-			.irq = 74,
-			.membase = OMAP2_L4_PER_IO_ADDRESS(AM33XX_UART3_BASE),
-			.baud = 9600,
-			.uartclk = 48000000,
-			{
-				{
-					.pin_offset = 0x950,
-					.pin_value = OMAP_MUX_MODE1 | AM33XX_PIN_INPUT_PULLUP,
-				},
-				{
-					.pin_offset = 0x954,
-					.pin_value = OMAP_MUX_MODE1 | AM33XX_PULL_ENBL,
-				},
-			},
-			.clkctrl_offset = 0x70,
-			.id = 2,
-		},
-
-		{
-			.regshift = 2,
-			.irq = 44,
-			.membase = OMAP2_L4_PER_IO_ADDRESS(AM33XX_UART4_BASE),
-			.baud = 9600,
-			.uartclk = 48000000,
-			{
-				{
-					.pin_offset = 0x934,
-					.pin_value = OMAP_MUX_MODE1 | AM33XX_PIN_INPUT_PULLUP,
-				},
-				{
-					.pin_offset = 0x938,
-					.pin_value = OMAP_MUX_MODE1 | AM33XX_PULL_ENBL,
-				},
-			},
-			.clkctrl_offset = 0x74,
-			.id = 3,
-		},
-
-		{
-			.regshift = 2,
-			.irq = 45,
-			.membase = OMAP2_L4_PER_IO_ADDRESS(AM33XX_UART5_BASE),
-			.baud = 9600,
-			.uartclk = 48000000,
-			{
-				{
-					.pin_offset = 0x91c,
-					.pin_value = OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLUP,
-				},
-				{
-					.pin_offset = 0x920,
-					.pin_value = OMAP_MUX_MODE3 | AM33XX_PULL_ENBL,
-				},
-			},
-			.clkctrl_offset = 0x78,
-			.id = 4,
-		},
-
-		{
-			.regshift = 2,
-			.irq = 46,
-			.membase = OMAP2_L4_PER_IO_ADDRESS(AM33XX_UART6_BASE),
-			.baud = 9600,
-			.uartclk = 48000000,
-			{
-				{
-					.pin_offset = 0x8c4,
-					.pin_value = OMAP_MUX_MODE4 | AM33XX_PIN_INPUT_PULLUP,
-				},
-				{
-					.pin_offset = 0x8c0,
-					.pin_value = OMAP_MUX_MODE4 | AM33XX_PULL_ENBL,
-				},
-			},
-		},
 };
-
 
 static inline unsigned int serial_in(struct uart_omap_port *up, int offset)
 {
@@ -524,103 +415,15 @@ serial_omap_set_termios(struct uart_omap_port *up)
 	serial_out(up, UART_LCR, up->lcr);
 }
 
-
-static void
-serial_omap_set_mux_conf(struct uart_omap_port *up)
-{
-	unsigned char __iomem *base = AM33XX_L4_WK_IO_ADDRESS(OMAP2_CTRL_BASE + up->pin_mux[0].pin_offset);
-	__raw_writel(up->pin_mux[0].pin_value, base);
-
-	base = AM33XX_L4_WK_IO_ADDRESS(OMAP2_CTRL_BASE + up->pin_mux[1].pin_offset);
-	__raw_writel(up->pin_mux[1].pin_value, base);
-}
-
-static void serial_omap_soft_reset(struct uart_omap_port *up)
-{
-	unsigned int temp;
-	temp = serial_in(up, UART_OMAP_SYSC);
-	temp |= 1 << 1;
-	serial_out(up, UART_OMAP_SYSC, temp);
-	while ((serial_in(up, UART_OMAP_SYSS) & 0x1) != 0x1);
-	temp = serial_in(up, UART_OMAP_SYSC);
-	temp |= 1 << 3;
-	serial_out(up, UART_OMAP_SYSC, temp);
-}
-
-
-
-static int calc_divisor (struct uart_omap_port *up)
-{
-	#define MODE_X_DIV 16
-	return (up->uartclk + (up->baud * (MODE_X_DIV / 2))) /
-		(MODE_X_DIV * up->baud);
-}
-
-#define UART_LCR_BKSE 0x80
-#define UART_LCRVAL 0x3
-#define UART_MCRVAL (0x1 | 0x2)
-#define UART_FCRVAL (0x1 | 0x2 | 0x4)
-
-static void serial_omap_early_init(struct uart_omap_port *up, int div)
-{
-	while(!(serial_in(up, UART_LSR) & UART_LSR_TEMT));
-	serial_out(up, UART_IER, 0);
-	serial_out(up, UART_OMAP_MDR1, 0x7);
-
-	serial_out(up, UART_LCR, UART_LCR_BKSE | UART_LCRVAL);
-	serial_out(up, UART_DLL, 0);
-	serial_out(up, UART_DLM, 0);
-	serial_out(up, UART_LCR, UART_LCRVAL);
-	serial_out(up, UART_MCR, UART_MCRVAL);
-	serial_out(up, UART_FCR, UART_FCRVAL);
-	serial_out(up, UART_LCR, UART_LCR_BKSE | UART_LCRVAL);
-	serial_out(up, UART_DLL, div & 0xff);
-	serial_out(up, UART_DLM, (div >> 8) & 0xff);
-	serial_out(up, UART_LCR, UART_LCRVAL);
-
-	serial_out(up, UART_OMAP_MDR1, 0);
-}
-
 void omap_serial_init(void)
 {
 	struct uart_omap_port *up;
 	int i;
-	printk("omap_serial_init step 1\n");
-return;
+
 	for (i = 0; i < 1; i++) {
 		up = &g_uart_omap_port[i];
-		printk("omap_serial_init step 2\n");
 
-		serial_omap_set_mux_conf(up);
 		setup_irq(up->irq, serial_omap_irq, up);
-		printk("omap_serial_init step 3\n");
-
-		if (i != 0) {
-			unsigned int temp;
-			void *addr;
-			int j = 1000;
-
-			addr = 0xfb020000 + up->clkctrl_offset;//OMAP2_L4_PER_IO_ADDRESS(0x49020000 + up->clkctrl_offset);
-			temp = readl(addr);
-
-			temp &= ~0x3;
-			temp |= 0x2;
-			writel(temp, addr);
-			
-			do {
-				temp = readl(addr);
-				temp = (temp >> 16) & 0x3;
-				j--;
-				if (!j)
-					break;
-			} while((temp == 1) || (temp == 3));
-		
-			serial_omap_soft_reset(up);
-			temp = calc_divisor(up);
-			serial_omap_early_init(up, temp);
-		}
-		printk("omap_serial_init step 4\n");
-
 		serial_omap_clear_fifos(up);
 		/*
 	 	* Clear the interrupt registers.
@@ -630,16 +433,12 @@ return;
 			(void) serial_in(up, UART_RX);
 		(void) serial_in(up, UART_IIR);
 		(void) serial_in(up, UART_MSR);
-		printk("omap_serial_init step 5\n");
 
 		up->ier = UART_IER_RLSI | UART_IER_RDI;
 		serial_out(up, UART_IER, up->ier);
-		printk("omap_serial_init step 6\n");
 
 		serial_omap_set_termios(up);
-		printk("omap_serial_init step 7\n");
 	}
-
 	printk("omap_serial_init\n");
 }
 

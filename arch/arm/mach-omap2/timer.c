@@ -18,11 +18,8 @@ static struct omap_dm_timer clkev1;
 static inline void __omap_dm_timer_init_regs(struct omap_dm_timer *timer)
 {
 	u32 tidr;
-	printk("__omap_dm_timer_init_regs 11\n");
-	printk("iobase %x\n", timer->io_base);
 	/* Assume v1 ip if bits [31:16] are zero */
 	tidr = __raw_readl(timer->io_base);
-	printk("tidr 0x%x\n", tidr);
 	if (!(tidr >> 16)) {
 		timer->revision = 1;
 		timer->sys_stat = timer->io_base +
@@ -43,13 +40,11 @@ static inline void __omap_dm_timer_init_regs(struct omap_dm_timer *timer)
 				OMAP_TIMER_V2_FUNC_OFFSET;
 		timer->func_base = timer->io_base + OMAP_TIMER_V2_FUNC_OFFSET;
 	}
-	printk("__omap_dm_timer_init_regs 22\n");
 }
 
 
 static inline void __omap_dm_timer_enable_posted(struct omap_dm_timer *timer)
 {
-	printk("__omap_dm_timer_enable_posted 11\n");
 	if (timer->posted)
 		return;
 
@@ -57,14 +52,12 @@ static inline void __omap_dm_timer_enable_posted(struct omap_dm_timer *timer)
 			OMAP_TIMER_CTRL_POSTED, 0);
 
 	timer->posted = OMAP_TIMER_POSTED;
-	printk("__omap_dm_timer_enable_posted 22\n");
 }
 
 
 static void omap2_gp_timer_set_mode(struct omap_dm_timer *timer)
 {
 	u32 period;
-	printk("omap2_gp_timer_set_mode 11\n");
 	__omap_dm_timer_stop(timer, 1, timer->rate);
 	
 	printk("omap2_gp_timer_set_mode 22\n");
@@ -77,7 +70,6 @@ static void omap2_gp_timer_set_mode(struct omap_dm_timer *timer)
 	__omap_dm_timer_load_start(timer,
 					OMAP_TIMER_CTRL_AR | OMAP_TIMER_CTRL_ST,
 						0xffffffff - period, 1);
-	printk("clkev.rate %lu\n", timer->rate);
 }
 
 static irqreturn_t omap2_gp_timer_interrupt(unsigned int irq, void *data)
@@ -100,47 +92,17 @@ void am33xx_timer_init(void)
 	unsigned int t1, t2;
 	int i;
 	memset(&clkev, 0 , sizeof(clkev));
-	clkev.io_base = (void *)0xfa320000;//OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER2_PHYS);
-	clkev.rate = 24000000;
-	clkev.irq = 68;
+	clkev.io_base = (void *)0xfa318000;//OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER2_PHYS);
+	clkev.rate = 13000000;
+	clkev.irq = 37;
 
-	early_print("xby_debug in am33xx_timer_init step 1\n");
 	memset(&clkev1, 0 , sizeof(clkev1));
-	clkev1.io_base = (void *)0xfa318000;//OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER3_PHYS);
-	clkev1.rate = 24000000;
+	clkev1.io_base = (void *)0xfa304000;//OMAP2_L4_PER_IO_ADDRESS(OMAP_TIMER_DMTIMER3_PHYS);
+	clkev1.rate = 32000;
 	
 	__omap_dm_timer_init_regs(&clkev);
 	__omap_dm_timer_enable_posted(&clkev);
-	early_print("xby_debug in am33xx_timer_init step 2\n");
 	omap2_gp_timer_set_mode(&clkev);
-	early_print("xby_debug in am33xx_timer_init step 2.1\n");
-
-#if 0
-	{
-		unsigned int temp;
-		unsigned int addr;
-		int j = 1000;
-		addr = (void *)AM33XX_L4_WK_IO_ADDRESS(0x44E00000 + 0x84);
-		temp = readl(addr);
-		temp &= ~0x3;
-		temp |= 0x2;
-		writel(temp, addr);
-		early_print("xby_debug in am33xx_timer_init step 2.2\n");
-		do {
-			temp = readl(addr);
-			temp = (temp >> 16) & 0x3;
-			j--;
-			if (!j)
-				break;
-		} while((temp == 1) || (temp == 3));
-		
-		printk("enable timer3 clock j %d\n", j);
-		
-		addr = (void *)AM33XX_L4_WK_IO_ADDRESS(0x44E00500 + 0xc);
-		writel(0x1, addr);
-	}	
-	early_print("xby_debug in am33xx_timer_init step 3\n");
-#endif
 
 	__omap_dm_timer_init_regs(&clkev1);
 	__omap_dm_timer_load_start(&clkev1,
@@ -155,11 +117,8 @@ void am33xx_timer_init(void)
 	printk("t1 0x%x t2 0x%x\n", t1, t2);
 #endif			   
 				   
-	early_print("xby_debug in am33xx_timer_init step 4\n");
 	setup_irq(clkev.irq, omap2_gp_timer_interrupt, NULL);
-	early_print("xby_debug in am33xx_timer_init step 5\n");
 	__omap_dm_timer_int_enable(&clkev, OMAP_TIMER_INT_OVERFLOW);
-	early_print("xby_debug in am33xx_timer_init step 6\n");
 	
 }
 

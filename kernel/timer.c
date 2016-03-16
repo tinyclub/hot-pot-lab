@@ -217,7 +217,7 @@ again:
 
 #define ACTHZ HZ
 /* TICK_NSEC is the time between ticks in nsec assuming real ACTHZ */
-#define TICK_NSEC (SH_DIV (1000000UL * 1000, ACTHZ, 8))
+#define TICK_NSEC (SH_DIV (1000000UL * 1000, ACTHZ, 8) >> 8)
 
 #define SEC_JIFFIE_SC (31 - SHIFT_HZ)
 #if !((((NSEC_PER_SEC << 2) / TICK_NSEC) << (SEC_JIFFIE_SC - 2)) & 0x80000000)
