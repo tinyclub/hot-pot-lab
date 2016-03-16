@@ -906,11 +906,11 @@ endchoice
 
 config ARCH_VEXPRESS
         bool "test 1"
-        default y
+        default n
 
 config VEXPRESS
         bool "test 2"
-        default y
+        default n
 
 menu "Multiple platform selection"
 

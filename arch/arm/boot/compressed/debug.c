@@ -1,4 +1,4 @@
-#if 0
+#if 1
 #include <linux/types.h>
 #include <linux/serial_reg.h>
 
@@ -45,7 +45,7 @@ void arch_decomp_setup(void)
 {
 	unsigned char port = 0;
 	do {
-//		DEBUG_LL_OMAP3(3, omap3_beagle);
+		DEBUG_LL_OMAP3(3, omap3_beagle);
 	}while (0);
 }
 

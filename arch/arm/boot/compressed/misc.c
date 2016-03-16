@@ -83,7 +83,7 @@ static void icedcc_putc(int ch)
 #define putc(ch)	icedcc_putc(ch)
 #endif
 
-#define putc(ch)
+//#define putc(ch)
 static void putstr(const char *ptr)
 {
 	char c;
