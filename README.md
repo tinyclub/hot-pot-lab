@@ -13,7 +13,7 @@ Hot Pot OS is an operating system developed by some Chinese hackers, the core de
 Build the docker env (image):
 
     $ cd hot-pot/lab
-    $ ./lab-env
+    $ sudo ./lab-env
 
 Start the docker env (VM), only for the first time:
 
@@ -23,14 +23,15 @@ Start the docker env (VM), only for the first time:
 After exit, start it again simply via (for the container id is saved in lab-container):
 
     $ ./lab-start
+    root@687031bd8f37:/hot-pot-lab#
 
 **Note**: The lab-env is only for Ubuntu >= 14.04, for the other distributions, please install [docker-engine](https://docs.docker.com/engine/installation/linux/) at first, then run `docker build -t tinylab/hot-pot-lab .` to build the image.
 
 ## Configure/Compile/Boot
 
-    $ ./arm.config
-    $ ./arm.compile
-    $ ./arm.run
+    root@687031bd8f37:/hot-pot-lab# ./arm.config
+    root@687031bd8f37:/hot-pot-lab# ./arm.compile
+    root@687031bd8f37:/hot-pot-lab# ./arm.run
     Texas Instruments X-Loader 1.5.1 (Jul 26 2011 - 00:39:12)
     Beagle xM
     Reading boot sector
