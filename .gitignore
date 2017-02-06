@@ -76,3 +76,4 @@ GTAGS
 *~
 \#*#
 *.img
+.builtin

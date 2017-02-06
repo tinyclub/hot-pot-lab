@@ -1,5 +1,0 @@
-1、修改名字和邮箱
-	git config --global user.name "Your Name"
-	git config --global user.email you@example.com
-2、clone方法
-	git clone ssh://xiebaoyou@123.56.154.221/alidata/gitrepos/hot-pot/.git
