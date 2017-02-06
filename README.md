@@ -6,7 +6,7 @@ Hot Pot OS is an operating system developed by some Chinese hackers, the core de
 
 ## Clone the code
 
-    $ git clone https://code.csdn.net/xiebaoyou/hot-pot.git
+    $ git clone https://github.com/tinyclub/hot-pot-lab.git
 
 ## Build the environment
 
