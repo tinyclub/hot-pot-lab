@@ -7,7 +7,7 @@ TOP_DIR=$(dirname `readlink -f $0`)
 
 docker_image=$user/$name
 local_lab_dir=$TOP_DIR/../
-remote_lab_dir=/hot-pot-lab/
+remote_lab_dir=/$name/
 
 CONTAINER_ID=""
 [ -f $TOP_DIR/lab-container ] && CONTAINER_ID=$(< $TOP_DIR/lab-container)
