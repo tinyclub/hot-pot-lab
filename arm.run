@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Run Hot Pot OS on Qemu emulated beagle board
+#
+
+# Add uImage to beagle.img
+
+[ ! -f beagle.img ] && tar jxf beagle.img.tar.bz2
+
+mount -o loop,offset=$((63*512)) beagle.img /mnt
+cp arch/arm/boot/uImage /mnt/
+sync
+umount /mnt
+
+# Start uImage on Qemu/ARM emulated beagle board
+
+qemu-system-arm -M beaglexm -m 512 -sd beagle.img -clock unix -serial stdio -s
