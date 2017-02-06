@@ -116,3 +116,6 @@ After exit, start it again simply via (for the container id is saved in lab-cont
         ##############################################
                                   
     [dim-sum@hot pot]#
+
+
+**Note**: Press `CTRL+C` to exit HotPot.
