@@ -12,7 +12,7 @@ Hot Pot OS is an operating system developed by some Chinese hackers, the core de
 
 Build the docker env (image):
 
-    $ cd hot-pot/lab
+    $ cd hot-pot-lab/lab
     $ sudo ./lab-env
 
 Start the docker env (VM), only for the first time:
