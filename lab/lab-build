@@ -7,7 +7,7 @@ TOP_DIR=$(dirname `readlink -f $0`)
 
 docker_image=$user/$name
 local_lab_dir=$TOP_DIR/../
-remote_lab_dir=/hot-pot-os/
+remote_lab_dir=$name
 
 CONTAINER_ID=$(docker run -d -i -t --privileged=true -v $local_lab_dir:$remote_lab_dir $docker_image)
 echo $CONTAINER_ID > $TOP_DIR/lab-container

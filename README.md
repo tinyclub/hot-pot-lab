@@ -18,7 +18,7 @@ Build the docker env (image):
 Start the docker env (VM), only for the first time:
 
     $ ./lab-build
-    root@687031bd8f37:/hot-pot-os# exit
+    root@687031bd8f37:/hot-pot-lab# exit
 
 After exit, start it again simply via (for the container id is saved in lab-container):
 

@@ -21,7 +21,7 @@ WORKDIR qemu-beagle/
 RUN ./configure --target-list=arm-softmmu --disable-strip --enable-debug
 RUN make -j8 && make install
 
-RUN mkdir /hot-pot-os/
-WORKDIR /hot-pot-os/
+RUN mkdir /hot-pot-lab/
+WORKDIR /hot-pot-lab/
 
 ENTRYPOINT ["/bin/bash"]
